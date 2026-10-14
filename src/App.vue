@@ -1,38 +1,15 @@
 <script setup>
-  import { ref, onMounted, computed, watch } from 'vue'
+  import { ref, watch } from 'vue'
   import dayjs from 'dayjs'
   import YoubikeData from './components/YoubikeData.vue'
   import YoubikeDataFilter from './components/YoubikeDataFilter.vue'
   import RefreshButton from './components/RefreshButton.vue'
-
-  import { YoubikeDataModel } from './model/YoubikeDataModel.js'
+  import { useYoubikeData } from './composables/useYoubikeData.js'
 
   const currentTimeString = ref('')
-  const youbikeData = ref(new YoubikeDataModel())
-  const youbikeDataFilter = ref(null)
-  const filteredYoubikeData = computed(() => youbikeDataFilter.value?.applyTo(youbikeData.value))
-  const sareaOptions = computed(() => {
-    const sareaData = youbikeData.value?.data?.map(data => data.sarea);
-    const distinctSareaData = Array.from(new Set(sareaData));
-    return distinctSareaData
-  })
-
-  onMounted(() => {
-    fetchData()
-  })
+  const { youbikeData, filteredYoubikeData, fetchData } = useYoubikeData()
 
   watch(youbikeData.value, updateTime)
-
-  function fetchData() {
-    fetch('https://tcgbusfs.blob.core.windows.net/dotapp/youbike/v2/youbike_immediate.json')
-      .then(response => response.json())
-      .then(jsonData => {
-        youbikeData.value.setDataJson(jsonData)
-      })
-      .catch(error => {
-        console.error(error)
-      })
-  }
 
   function refresh() {
     fetchData()
@@ -42,21 +19,17 @@
     currentTimeString.value = dayjs().format('YYYY-MM-DD hh:mm:ss')
   }
 
-  function onFilterChanged(filterValue) {
-    youbikeDataFilter.value = filterValue
-  }
-
 </script>
 
 
 <template>
   <div id="header">
-    <YoubikeDataFilter :sareaOptions="sareaOptions" @onChanged="onFilterChanged" />
+    <YoubikeDataFilter />
     <div id="refresh-btn-div">
       <RefreshButton @onclick="refresh" />
     </div>
   </div>
-  <YoubikeData :youbikeData="filteredYoubikeData" />
+  <YoubikeData />
   <div id="footer">
     <div>
       <label>

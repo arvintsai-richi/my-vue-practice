@@ -1,11 +1,12 @@
 <script setup>
   import { ref, computed } from 'vue'
+  import { useYoubikeData } from '../composables/useYoubikeData.js'
 
-  const props = defineProps(['youbikeData'])
+  const { filteredYoubikeData } = useYoubikeData()
 
   const sortColumn = ref("")
   const sortAsc = ref(true)
-  const sortedData = computed(() => props.youbikeData?.sorted(sortColumn.value, sortAsc.value))
+  const sortedData = computed(() => filteredYoubikeData.value?.sorted(sortColumn.value, sortAsc.value))
 
   function setSortColumn(column) {
     if (sortColumn.value !== column) {

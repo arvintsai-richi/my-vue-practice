@@ -1,17 +1,13 @@
 <script setup>
-  import { ref, watchEffect } from 'vue'
-  import { YoubikeDataFilterModel } from '../model/YoubikeDataFilterModel.js'
+  import { computed } from 'vue'
+  import { useYoubikeData } from '../composables/useYoubikeData.js'
 
-  const props = defineProps(["sareaOptions"])
-  const emits = defineEmits(["onChanged"])
-
-  const youbikeDataFilter = ref(new YoubikeDataFilterModel())
-
-  watchEffect(onChanged)
-
-  function onChanged() {
-    emits('onChanged', youbikeDataFilter.value)
-  }
+  const { youbikeData, youbikeDataFilter } = useYoubikeData()
+  const sareaOptions = computed(() => {
+    const sareaData = youbikeData.value?.data?.map(data => data.sarea);
+    const distinctSareaData = Array.from(new Set(sareaData));
+    return distinctSareaData
+  })
 
 </script>
 
