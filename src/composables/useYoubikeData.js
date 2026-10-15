@@ -6,6 +6,13 @@ const youbikeData = ref(new YoubikeDataModel())
 const youbikeDataFilter = ref(new YoubikeDataFilterModel())
 const filteredYoubikeData = computed(() => youbikeDataFilter.value?.applyTo(youbikeData.value))
 
+/**
+ * 使用 Youbike 資料，將回傳
+ * - youbikeData，原始 youbike 資料
+ * - youbikeDataFilter，過濾 youbikeData 的過濾器
+ * - filteredYoubikeData，用 youbikeDataFilter 來過濾 youbikeData 的結果
+ * - fetchData 更新資料的函式，初始化時會自動呼叫一次
+ */
 export function useYoubikeData() {
 
   onMounted(() => {
